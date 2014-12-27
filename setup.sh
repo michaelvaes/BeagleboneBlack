@@ -5,18 +5,19 @@
 # BBB Install Script
 # git clone https://github.com/michaelvaes/BeagleboneBlack.git
 #
-alias echo='echo -e';
-GREEN='\e[32m';
-RED='\e[91m';
+source .bash_colors;
 
-echo "${GREEN}--------------------------------------------------------------------------------";
-echo "${GREEN} Start at " `date`;
-echo "${GREEN}--------------------------------------------------------------------------------";
+# Run under /root
+cd /root;
+
+clr_green "--------------------------------------------------------------------------------";
+clr_green " Start at " `date`;
+clr_green "--------------------------------------------------------------------------------";
 echo
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} Partitioning";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " Partitioning";
+clr_green "------------------------------------------------------------";
 read -p "Linux partition expanded on SD Card? [y/n]: " sAnswer
 case $sAnswer in
     [Yy]* ) 
@@ -31,15 +32,15 @@ esac
 unset sAnswer
 echo
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} Setting root password";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " Setting root password";
+clr_green "------------------------------------------------------------";
 passwd
 echo 
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} Profile update";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " Profile update";
+clr_green "------------------------------------------------------------";
 cat > /root/.profile <<EOF
 export EDITOR=vi;
 export VISUAL=vi;
@@ -58,9 +59,9 @@ locale-gen en_US.UTF-8;
 dpkg-reconfigure locales;
 echo
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} Updating network configuration";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " Updating network configuration";
+clr_green "------------------------------------------------------------";
 read -p "Did you add the DNS config to the server? [y/n]: " sAnswer;
 case $sAnswer in
     [Yy]* ) 
@@ -110,9 +111,9 @@ nameserver 8.8.4.4
 EOF
 echo
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} Updating";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " Updating";
+clr_green "------------------------------------------------------------";
 echo "Updating apt-get to use local sources (Belgium) /etc/apt/sources.list";
 cat > /etc/apt/sources.list <<EOF
 deb http://ftp.be.debian.org/debian/ wheezy main contrib non-free
@@ -132,9 +133,9 @@ deb [arch=armhf] http://debian.beagleboard.org/packages wheezy-bbb main
 EOF
 apt-get update;
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} Software installs";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " Software installs";
+clr_green "------------------------------------------------------------";
 echo "Removing some packages";
 apt-get remove 'node*';
 
@@ -145,9 +146,9 @@ echo "Installing new packages";
 apt-get install ntpdate strace ethtool sharutils bc dnsutils exim4-base exim4-config exim4-daemon-light git;
 echo
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} Mail config";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " Mail config";
+clr_green "------------------------------------------------------------";
 sed -iE "s/root: root/root: postmaster@michaelvaes.be/g" /etc/aliases;
 cat /etc/hostname > /etc/mailname;
 cat > /etc/exim4/update-exim4.conf.conf <<EOF
@@ -186,18 +187,18 @@ EOF
 update-exim4.conf;
 echo
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} SSH config";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " SSH config";
+clr_green "------------------------------------------------------------";
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak;
 sed -iE "s/^Banner/#Banner/g" /etc/ssh/sshd_config;
 sed -iE "s/^PermitEmptyPasswords yes/PermitEmptyPasswords no/g" /etc/ssh/sshd_config;
 /etc/init.d/ssh restart;
 echo
 
-echo "${GREEN}------------------------------------------------------------";
-echo "${GREEN} Installing crontabs";
-echo "${GREEN}------------------------------------------------------------";
+clr_green "------------------------------------------------------------";
+clr_green " Installing crontabs";
+clr_green "------------------------------------------------------------";
 cat > /var/spool/cron/crontabs/root <<EOF
 SHELL=/bin/bash
 PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -211,14 +212,14 @@ PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 EOF
 echo
 
-echo "${GREEN}--------------------------------------------------------------------------------";
-echo "${GREEN} Completed at " `date`;
-echo "${GREEN}--------------------------------------------------------------------------------";
+clr_green "--------------------------------------------------------------------------------";
+clr_green " Completed at " `date`;
+clr_green "--------------------------------------------------------------------------------";
 echo
 
-echo "${RED}--------------------------------------------------------------------------------";
-echo "${RED} Reboot";
-echo "${RED}--------------------------------------------------------------------------------";
+clr_red "--------------------------------------------------------------------------------";
+clr_red " Reboot";
+clr_red "--------------------------------------------------------------------------------";
 read -p "Do you want to reboot now? [y/n]: " sAnswer
 case $sAnswer in
     [Yy]* ) 
