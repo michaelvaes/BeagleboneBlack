@@ -10,9 +10,9 @@ source .bash_colors;
 # Run under /root
 cd /root;
 
-clr_green "--------------------------------------------------------------------------------";
-clr_green " Start at " `date`;
-clr_green "--------------------------------------------------------------------------------";
+clr_blue "--------------------------------------------------------------------------------";
+clr_blue " Start at `date`";
+clr_blue "--------------------------------------------------------------------------------";
 echo
 
 clr_green "------------------------------------------------------------";
@@ -21,11 +21,10 @@ clr_green "------------------------------------------------------------";
 read -p "Linux partition expanded on SD Card? [y/n]: " sAnswer
 case $sAnswer in
     [Yy]* ) 
-        echo "Continueing...";
         ;;
     * ) 
-		echo "Please expand SD Card partition first."; 
-		echo "More info at http://elinux.org/Beagleboard:Expanding_File_System_Partition_On_A_microSD";
+		echo " Please expand SD Card partition first."; 
+		echo " More info at http://elinux.org/Beagleboard:Expanding_File_System_Partition_On_A_microSD";
 		exit;
         ;;
 esac
@@ -39,7 +38,7 @@ passwd
 echo 
 
 clr_green "------------------------------------------------------------";
-clr_green " Profile update";
+clr_green " Profile updates";
 clr_green "------------------------------------------------------------";
 cat > /root/.profile <<EOF
 export EDITOR=vi;
@@ -54,6 +53,20 @@ if [ -d ~/bin ] ; then
   export PATH="~/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
 fi
 EOF
+cat > /root/.vimrc <<EOF
+set noai
+set hlsearch
+set ignorecase
+set incsearch
+set nocompatible
+set number
+set ruler
+set showmatch
+set sm
+set tabstop=2
+set wrap
+syntax on
+EOF
 source /root/.profile
 locale-gen en_US.UTF-8;
 dpkg-reconfigure locales;
@@ -65,7 +78,6 @@ clr_green "------------------------------------------------------------";
 read -p "Did you add the DNS config to the server? [y/n]: " sAnswer;
 case $sAnswer in
     [Yy]* ) 
-        echo "Continueing...";
         ;;
     * ) 
         exit;
@@ -99,7 +111,7 @@ iface eth0 inet static
 # ... or on host side, usbnet and random hwaddr
 # Note on some boards, usb0 is automaticly setup with an init script
 iface usb0 inet static
-    address 192.168.7.$sIP
+    address 192.168.7.2
     netmask 255.255.255.0
     network 192.168.7.0
     gateway 192.168.7.1
@@ -132,17 +144,18 @@ deb [arch=armhf] http://debian.beagleboard.org/packages wheezy-bbb main
 #deb-src [arch=armhf] http://debian.beagleboard.org/packages wheezy-bbb main
 EOF
 apt-get update;
+echo
 
 clr_green "------------------------------------------------------------";
 clr_green " Software installs";
 clr_green "------------------------------------------------------------";
-echo "Removing some packages";
+clr_blue "Removing some packages";
 apt-get remove 'node*';
-
-echo "Upgrading all packages";
+echo
+clr_blue "Upgrading all packages";
 apt-get upgrade;
-
-echo "Installing new packages";
+echo
+clr_blue "Installing new packages";
 apt-get install ntpdate strace ethtool sharutils bc dnsutils exim4-base exim4-config exim4-daemon-light git;
 echo
 
@@ -207,13 +220,16 @@ PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 * */4 * * * ntpdate -bsu europe.pool.ntp.org
 
 * * * * * bash /root/BeagleboneBlack/Scripts/BBBStats/ServerStats.bash
-#* * * * * source /root/BeagleboneBlack/Scripts/BBBStats/ThingSpeak.bash && tsPushTemperatures
+
+# Temperature sensing
+#@reboot echo w1 > /sys/devices/bone_capemgr.9/slots;
+#* * * * * source /root/BeagleboneBlack/Scripts/BBBStats/ThingSpeak.bash && tsPushTemperatures > /dev/null
 
 EOF
 echo
 
 clr_green "--------------------------------------------------------------------------------";
-clr_green " Completed at " `date`;
+clr_green " Completed at `date`";
 clr_green "--------------------------------------------------------------------------------";
 echo
 
