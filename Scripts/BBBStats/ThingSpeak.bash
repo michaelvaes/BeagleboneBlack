@@ -2,7 +2,7 @@
 
 #DEFAULT VALUE EXAMPLE {2:-production}
 URI="https://api.thingspeak.com/update";
-DIR=$( pwd );
+DIR="/root/BeagleboneBlack/Scripts/BBBStats/";
 
 function tsPostData {
   local API_KEY="${1}"; shift;
