@@ -18,16 +18,14 @@ function tsPostData {
 
 	# POST the data to thingspeak
 	curl -sS --data "api_key=$API_KEY&$PARAMS" ${URI} > /dev/null
-	#echo "api_key=$API_KEY&$PARAMS" ${URI}
+	echo "api_key=$API_KEY&$PARAMS" ${URI}
 }
 
 function tsPushTemperatures {
-	declare -A SENSORS;
-	local API_KEY="8DLTGR4JMAZ7SGO1";	
 	local PARAMS="";
 	local VALUE="";
 
-	SENSORS["28-0000057ee007"]="&Office&field1";
+	source ./TemperatureSensors.bash
 
 	for i in "${!SENSORS[@]}"; do
 		VALUE=$(getTemperature "$i");
@@ -36,13 +34,16 @@ function tsPushTemperatures {
 
 	# POST the data to thingspeak
 	curl -sS --data "api_key=$API_KEY&$PARAMS" ${URI} > /dev/null
-	#echo "api_key=$API_KEY&$PARAMS" ${URI}
+	echo "api_key=$API_KEY&$PARAMS" ${URI}
 }
 
 function getTemperature {
 	local SENSOR_ID="${1}";
-  local TEMP=`grep -oE "t=([0-9]+)$" "/sys/devices/w1_bus_master1/${SENSOR_ID}/w1_slave"`;
-	TEMP=$(echo "scale=3; ${TEMP:2} / 1000" | bc);
-
-	echo ${TEMP};	
+	local TEMP=`grep -oE "t=(\-*[0-9]+)$" "/sys/devices/w1_bus_master1/${SENSOR_ID}/w1_slave"`;
+	if [ "$?" -eq "0" ]; then
+		TEMP=$(echo "scale=3; ${TEMP:2} / 1000" | bc);
+		echo ${TEMP};
+	else
+		echo "Invalid temperature reading: ${TEMP}";
+	fi
 }
