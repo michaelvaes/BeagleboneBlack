@@ -2,6 +2,7 @@
 
 #DEFAULT VALUE EXAMPLE {2:-production}
 URI="https://api.thingspeak.com/update";
+DIR=$( pwd );
 
 function tsPostData {
   local API_KEY="${1}"; shift;
@@ -25,7 +26,7 @@ function tsPushTemperatures {
 	local PARAMS="";
 	local VALUE="";
 
-	source ./TemperatureSensors.bash
+	source "${DIR}/TemperatureSensors.bash";
 
 	for i in "${!SENSORS[@]}"; do
 		VALUE=$(getTemperature "$i");
@@ -39,11 +40,12 @@ function tsPushTemperatures {
 
 function getTemperature {
 	local SENSOR_ID="${1}";
-	local TEMP=`grep -oE "t=(\-*[0-9]+)$" "/sys/devices/w1_bus_master1/${SENSOR_ID}/w1_slave"`;
-	if [ "$?" -eq "0" ]; then
+	local TEMP=`grep -oE "t=(\-*[0-9]+)$" "/sys/devices/w1_bus_master1/${SENSOR_ID}/w1_slave" || echo x`;
+	if [ "${TEMP}" != "x" ]; then
 		TEMP=$(echo "scale=3; ${TEMP:2} / 1000" | bc);
 		echo ${TEMP};
 	else
-		echo "Invalid temperature reading: ${TEMP}";
+		echo "Invalid temperature reading!";
+		exit;
 	fi
 }
