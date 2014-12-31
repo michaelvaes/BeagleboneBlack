@@ -45,7 +45,7 @@ function getTemperature {
 		TEMP=$(echo "scale=3; ${TEMP:2} / 1000" | bc);
 		echo ${TEMP};
 	else
-		echo "Invalid temperature reading!";
+		echo "Invalid temperature reading: ${TEMP}";
 		exit;
 	fi
 }
