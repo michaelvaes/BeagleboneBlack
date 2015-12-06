@@ -8,9 +8,10 @@
 
 # add to crontab (command: crontab -e)
 # * * * * * /path/to/ServerStats.bash
+DIR="/root/BeagleboneBlack/Scripts/BBBStats/";
 
 # thingspeak api key for channel that data will be logged to
-source "./ServerStats-config.bash";
+source "${DIR}/ServerStats-config.bash";
 
 # get cpu usage as a percent
 used_cpu_percent=`top -b -n2 -p 1 | fgrep "Cpu(s)" | tail -1 | tr -s ' ' | cut -f2 -d' ' | cut -f1 -d'%'`
