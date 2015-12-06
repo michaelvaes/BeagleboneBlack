@@ -102,10 +102,10 @@ iface lo inet loopback
 auto eth0
 allow-hotplug eth0
 iface eth0 inet static
-    address 192.168.0.$sIP
+    address 192.168.40.$sIP
     netmask 255.255.255.0
-    network 192.168.0.0
-    gateway 192.168.0.1
+    network 192.168.40.0
+    gateway 192.168.40.1
 
 # Ethernet/RNDIS gadget (g_ether)
 # ... or on host side, usbnet and random hwaddr
@@ -117,9 +117,7 @@ iface usb0 inet static
     gateway 192.168.7.1
 EOF
 cat > /etc/resolv.conf <<EOF
-nameserver 192.168.0.100
-nameserver 8.8.8.8
-nameserver 8.8.4.4
+nameserver 192.168.40.1
 EOF
 echo
 
