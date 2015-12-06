@@ -4,13 +4,13 @@
 # sudo apt-get install bc
 
 # make this file executable:
-# chmod +x server_stats.sh
+# chmod +x ServerStats.bash
 
 # add to crontab (command: crontab -e)
-# * * * * * /path/to/server_stats.sh
+# * * * * * /path/to/ServerStats.bash
 
 # thingspeak api key for channel that data will be logged to
-api_key='QRZ62ZV8LAVEHLSJ'
+source "./ServerStats-config.bash";
 
 # get cpu usage as a percent
 used_cpu_percent=`top -b -n2 -p 1 | fgrep "Cpu(s)" | tail -1 | tr -s ' ' | cut -f2 -d' ' | cut -f1 -d'%'`

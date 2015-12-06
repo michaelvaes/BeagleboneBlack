@@ -26,7 +26,7 @@ function tsPushTemperatures {
 	local PARAMS="";
 	local VALUE="";
 
-	source "${DIR}/TemperatureSensors.bash";
+	source "${DIR}/TemperatureSensors-config.bash";
 
 	for i in "${!SENSORS[@]}"; do
 		VALUE=$(getTemperature "$i");
