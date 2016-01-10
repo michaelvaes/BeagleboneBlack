@@ -30,6 +30,7 @@ function tsPushTemperatures {
 	local VALUE="";
 
 	source "${CONFIG}";
+	source "${FUNC}";
 
 	for i in "${!SENSORS[@]}"; do
 		VALUE=$(getTemperature "${i}");
